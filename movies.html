@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>
+			Peliculas Free
+		</title>
+		<!-- ENLAZAR VUE JS -->
+		<script src="https://unpkg.com/vue@3"></script>
+		<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@2.27.0/dist/full.css" rel="stylesheet" type="text/css" />
+	</head> 
+	<body class="bg-white dark:bg-slate-800 rounded-lg px-6 py-8 ring-1 ring-slate-900/5 shadow-xl">
+        <div id="contenedor" >
+            <header id="header">
+                <nav>
+                    <div class="navbar bg-base-100">
+                        <div class="flex-1">
+                          <a class="btn btn-ghost normal-case text-xl">{{user}}</a>
+                        </div>
+                        <div class="flex-none">
+                          <button class="btn btn-square btn-ghost">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-5 h-5 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path></svg>
+                          </button>
+                        </div>
+                      </div>
+                </nav>
+            </header>
+            <div id="content" class="flex">
+                <div class="card m-10 w-96 bg-base-100 shadow-xl" v-for="m in ">
+                    <figure><img src="https://image.tmdb.org/t/p/w500/9f5sIJEgvUpFv0ozfA6TurG4j22.jpg" alt="Movies" /></figure>
+                    <div class="card-body">
+                      <h2 class="card-title">Movies</h2>
+                      <p>If a dog chews shoes whose shoes does he choose?</p>
+                      <div class="card-actions justify-end">
+                        <button @click="verMas" class="btn btn-primary">ver mas</button>
+                      </div>
+                    </div>
+                  </div>
+                <div class="card m-10 w-96 bg-base-100 shadow-xl">
+                    <figure><img src="https://image.tmdb.org/t/p/w500/rugyJdeoJm7cSJL1q4jBpTNbxyU.jpg" alt="Shoes" /></figure>
+                    <div class="card-body">
+                      <h2 class="card-title">Movies</h2>
+                      <p>If a dog chews shoes whose shoes does he choose?</p>
+                      <div class="card-actions justify-end">
+                        <button @click="verMas" class="btn btn-primary">ver mas</button>
+                      </div>
+                    </div>
+                  </div>
+                <div class="card m-10 w-96 bg-base-100 shadow-xl">
+                    <figure><img src="https://image.tmdb.org/t/p/w500/pIkRyD18kl4FhoCNQuWxWu5cBLM.jpg" alt="Shoes" /></figure>
+                    <div class="card-body">
+                      <h2 class="card-title" >{{title}}</h2>
+                      <p>If a dog chews shoes whose shoes does he choose?</p>
+                      <div class="card-actions justify-end">
+                        <button @click="verMas" class="btn btn-primary">ver mas</button>
+                      </div>
+                    </div>
+                  </div>
+            </div>
+            <footer id="footer">
+                
+            </footer>
+        </div>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+            <script type="text/javascript">
+			// vincular vue con mi contenedor
+			const { createApp } = Vue;  
+
+			const app = createApp({
+				data(){
+					return {
+						user:null, 
+						inAction: 'show',
+						name:'',
+						id:0,
+
+						movie: '',
+					}
+				},
+				methods: {
+					verMas(e){
+						//var axios = require('axios');
+						//var FormData = require('form-data');
+						var data = new FormData();
+						
+						var config = {
+						  method: 'get',
+						  url: 'https://api.themoviedb.org/3/movie/popular?language=en-US&page=1',
+						  headers: { 
+							'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwZjMzZWI5MjczNDMwYzE0OTkwNzM2MGU3ZTk1ZTVlNyIsInN1YiI6IjYzMWUyZWI4Yjg3YWVjMDA3Zjg5N2UyYiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.VGSFNA0O6HUgqky9J7NTZU6ncl8mNstDGSTo1LWRfBM', 
+							//...data.getHeaders()
+						  },
+						  data : data
+						};
+						
+						axios(config)
+						.then(function (response) {
+							this.movie = response.data
+						  console.log(JSON.stringify(response.data));
+						})
+						.catch(function (error) {
+						  console.log(error);
+						});
+						
+					},
+
+
+
+					action(m,u){
+						this.inAction = m; 
+						
+						if (m=='edit') {
+							this.name = u.name
+							this.id = u.id 
+						}else{
+							this.name = ''
+							this.id = 0
+						}
+
+					},
+					cancel(){
+						this.inAction = 'show'; 
+					},
+					save(e){
+
+						e.preventDefault();
+						var access;
+
+						if (this.inAction=='edit') {
+
+							let id = this.id
+							let name = this.name;
+
+							access = this.users.map(function(u){
+							
+								if ( id == u.id ) {
+
+									u.name = name; 
+									swal("Good job!", "You clicked the button!", "success");
+
+									return true;
+
+								}	 
+							}) 
+
+							if (access.includes(true)) { 
+								this.inAction = 'show'; 
+								 
+							}else{
+								swal("Good job!", "You clicked the button!", "error");
+							}
+
+						}else{
+							this.users.push({name:this.name})
+							swal("Good job!", "You clicked the button!", "success");
+							this.inAction = 'show'; 
+						}
+
+						
+					},
+					remove(u){
+						swal({
+						  title: "Are you sure?",
+						  text: "Once deleted, you will not be able to recover this imaginary file!",
+						  icon: "warning",
+						  buttons: true,
+						  dangerMode: true,
+						})
+						.then((willDelete) => {
+						  if (willDelete) {
+						    
+
+						    let c = 0; 
+						    let i = 0;
+
+						    this.users.forEach(function(e){
+						    	//element => console.log(element)
+
+						    	if (e.id == u) {
+						    		console.log(e) 
+						    		i = c;
+						    	}
+
+						    	c++;
+						    });
+
+						    console.log(i)
+						    this.users.splice(i, 1) 
+
+						    swal("Poof! Your imaginary file has been deleted!", {
+						      icon: "success",
+						    });
+
+						  } else {
+						    swal("Your imaginary file is safe!");
+						  }
+						});
+
+					}
+
+				},
+				mounted(){
+                    var usr = localStorage.getItem('user');
+					usr = JSON.parse(usr);    
+					this.user = usr.eml;
+				}
+			}).mount('#contenedor')
+		</script>
+	</body>
+</html>

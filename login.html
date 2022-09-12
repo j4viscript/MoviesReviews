@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>
+            Cuevana 75
+		</title>
+        <script src="https://cdn.tailwindcss.com"></script><link href="https://cdn.jsdelivr.net/npm/daisyui@2.27.0/dist/full.css" rel="stylesheet" type="text/css" />   
+	</head>
+	<body class="bg-white dark:bg-slate-800 rounded-lg px-6 py-8 ring-1 ring-slate-900/5 shadow-xl">
+
+		<div id="contenedor">
+			
+			<form>
+				<fieldset>
+					<legend>
+						Datos de acceso
+					</legend>
+
+
+					<label>
+						Correo electrónico 
+					</label>
+					<input type="email" v-model="email" name="" required>
+
+					<br>
+
+					<label>
+						Password
+					</label>
+					<input type="password" v-model="password" name="" required>
+
+					<br>
+
+					<button @click="login">
+						Acceder
+					</button>
+
+				</fieldset>
+			</form>
+
+		</div>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<script src="https://unpkg.com/vue@3"></script>
+		<script type="text/javascript">
+			const { createApp } = Vue
+
+			const app = createApp({
+				data(){
+					return{ 
+						users:null,
+						email:'',
+						password:''
+					}
+				},
+				methods:{
+					login(e){
+
+                        //var axios = require('axios');
+                        //var FormData = require('form-data');
+                        var User = {
+                            eml: this.email,
+                            psw: this.password
+                        }
+                        
+                        var data = new FormData();
+                        data.append('username', this.email); //JavierMurilloC
+                        data.append('password', this.password); //270201
+                        data.append('request_token', '');
+                        
+                        var config = {
+                          method: 'post',
+                          url: 'https://api.themoviedb.org/3/authentication/token/validate_with_login',
+                          headers: { 
+                            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwZjMzZWI5MjczNDMwYzE0OTkwNzM2MGU3ZTk1ZTVlNyIsInN1YiI6IjYzMWUyZWI4Yjg3YWVjMDA3Zjg5N2UyYiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.VGSFNA0O6HUgqky9J7NTZU6ncl8mNstDGSTo1LWRfBM', 
+                            //...data.getHeaders()
+                          },
+                          data : data
+                        };
+                        
+                        axios(config)
+                        .then(function (response) {
+                            if (response.data.success) { 
+                                window.location.href = 'movies.html'
+                                console.log("si te metiste")
+                                localStorage.setItem('user', JSON.stringify(User));
+                            }
+                          console.log(JSON.stringify(response.data));
+                        })
+                        .catch(function (error) {
+                            alert("datos incorrectos"); 
+                          console.log(error);
+                        });
+                            
+					}
+				},
+				mounted(){
+					//fetch('data/users.json')
+					//.then((res) => res.json())
+					//.catch((err) => ( alert('no data') ))
+					//.then((json) => ( this.users = json ))
+				}
+			}).mount('#contenedor')
+
+		</script>
+	</body>
+</html>
