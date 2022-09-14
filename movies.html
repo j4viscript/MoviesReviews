@@ -13,7 +13,7 @@
         <link href="https://cdn.jsdelivr.net/npm/daisyui@2.27.0/dist/full.css" rel="stylesheet" type="text/css" />
 	</head> 
 	<body class="bg-white dark:bg-slate-800 rounded-lg px-6 py-8 ring-1 ring-slate-900/5 shadow-xl">
-        <div id="contenedor" >
+		<div id="contenedor" >
             <header id="header">
                 <nav>
                     <div class="navbar bg-base-100">
@@ -28,44 +28,26 @@
                       </div>
                 </nav>
             </header>
-            <div id="content" class="flex">
-                <div class="card m-10 w-96 bg-base-100 shadow-xl" v-for="m in movie">
-                    <figure><img src="https://image.tmdb.org/t/p/w500/{{m.poster_path}}" alt="Movies" /></figure>
-                    <div class="card-body">
-                      <h2 class="card-title">{{m.title}}</h2>
-                      <p></p>
-                      <div class="card-actions justify-end">
-                        <button @click="verMas" class="btn btn-primary">ver mas</button>
-                      </div>
-                    </div>
-                  </div>
-                <div class="card m-10 w-96 bg-base-100 shadow-xl" v-for="m in movie">
-                    <figure><img src="https://image.tmdb.org/t/p/w500/rugyJdeoJm7cSJL1q4jBpTNbxyU.jpg" alt="Shoes" /></figure>
-                    <div class="card-body">
-                      <h2 class="card-title">
-						{{m.title}}
-					  </h2>
-                      <p>If a dog chews shoes whose shoes does he choose?</p>
-                      <div class="card-actions justify-end">
-                        <button @click="verMas" class="btn btn-primary">ver mas</button>
-                      </div>
-                    </div>
-                  </div>
-                <div class="card m-10 w-96 bg-base-100 shadow-xl">
-                    <figure><img src="https://image.tmdb.org/t/p/w500/pIkRyD18kl4FhoCNQuWxWu5cBLM.jpg" alt="Shoes" /></figure>
-                    <div class="card-body">
-                      <h2 class="card-title" ></h2>
-                      <p>If a dog chews shoes whose shoes does he choose?</p>
-                      <div class="card-actions justify-end">
-                        <button @click="verMas" class="btn btn-primary">ver mas</button>
-                      </div>
-                    </div>
-                  </div>
-            </div>
-            <footer id="footer">
-                
-            </footer>
+			<div class="flex flex-wrap justify-content">
+				<div id="content" class="flex" v-for="m in movie">
+					<div class="card m-10 w-96 bg-base-100 shadow-xl">
+						<figure><img :src="`https://image.tmdb.org/t/p/w500/${m.poster_path}`" alt="Movies" /></figure>
+							<div class="card-body">
+						<h2 class="card-title">{{m.title}}</h2>
+						<div class="card-actions justify-end">
+							<button @click="verMas(m)" class="btn btn-primary">See More</button>
+						</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<footer class="footer footer-center p-4 bg-base-300 text-base-content">
+				<div>
+				  <p>Copyright © 2022 - All right reserved by Javier Oskar Murillo Cota</p>
+				</div>
+			  </footer>
         </div>
+		
 		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
             <script type="text/javascript">
 			// vincular vue con mi contenedor
@@ -78,139 +60,54 @@
 						inAction: 'show',
 						name:'',
 						id:0,
-						movie: '',
+						movie: [],
 					}
 				},
 				methods: {
-					verMas(e){
-						//var axios = require('axios');
-						//var FormData = require('form-data');
-						
-						
-					},
+					load(){
+						//se ve el usuario arriba
+						var usr = localStorage.getItem('user');
+						usr = JSON.parse(usr);  
+						this.user = usr.eml;
 
 
+						////////////////////////////////////////////////////////////////
+						_self = this;
 
-					action(m,u){
-						this.inAction = m; 
-						
-						if (m=='edit') {
-							this.name = u.name
-							this.id = u.id 
-						}else{
-							this.name = ''
-							this.id = 0
-						}
-
-					},
-					cancel(){
-						this.inAction = 'show'; 
-					},
-					save(e){
-
-						e.preventDefault();
-						var access;
-
-						if (this.inAction=='edit') {
-
-							let id = this.id
-							let name = this.name;
-
-							access = this.users.map(function(u){
+						var data = new FormData();
 							
-								if ( id == u.id ) {
-
-									u.name = name; 
-									swal("Good job!", "You clicked the button!", "success");
-
-									return true;
-
-								}	 
-							}) 
-
-							if (access.includes(true)) { 
-								this.inAction = 'show'; 
-								 
-							}else{
-								swal("Good job!", "You clicked the button!", "error");
-							}
-
-						}else{
-							this.users.push({name:this.name})
-							swal("Good job!", "You clicked the button!", "success");
-							this.inAction = 'show'; 
-						}
-
-						
-					},
-					remove(u){
-						swal({
-						  title: "Are you sure?",
-						  text: "Once deleted, you will not be able to recover this imaginary file!",
-						  icon: "warning",
-						  buttons: true,
-						  dangerMode: true,
-						})
-						.then((willDelete) => {
-						  if (willDelete) {
-						    
-
-						    let c = 0; 
-						    let i = 0;
-
-						    this.users.forEach(function(e){
-						    	//element => console.log(element)
-
-						    	if (e.id == u) {
-						    		console.log(e) 
-						    		i = c;
-						    	}
-
-						    	c++;
-						    });
-
-						    console.log(i)
-						    this.users.splice(i, 1) 
-
-						    swal("Poof! Your imaginary file has been deleted!", {
-						      icon: "success",
-						    });
-
-						  } else {
-						    swal("Your imaginary file is safe!");
-						  }
-						});
-
-					}
-
-				},
-				mounted(){
-                    var usr = localStorage.getItem('user');
-					usr = JSON.parse(usr);    
-					this.user = usr.eml;
-
-					var data = new FormData();
-						
 						var config = {
 						  method: 'get',
 						  url: 'https://api.themoviedb.org/3/movie/popular?language=en-US&page=1',
 						  headers: { 
-							'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwZjMzZWI5MjczNDMwYzE0OTkwNzM2MGU3ZTk1ZTVlNyIsInN1YiI6IjYzMWUyZWI4Yjg3YWVjMDA3Zjg5N2UyYiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.VGSFNA0O6HUgqky9J7NTZU6ncl8mNstDGSTo1LWRfBM', 
-							//...data.getHeaders()
+							'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwZjMzZWI5MjczNDMwYzE0OTkwNzM2MGU3ZTk1ZTVlNyIsInN1YiI6IjYzMWUyZWI4Yjg3YWVjMDA3Zjg5N2UyYiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.VGSFNA0O6HUgqky9J7NTZU6ncl8mNstDGSTo1LWRfBM',  
 						  },
 						  data : data
-						};
-						
-
+						}; 
 						axios(config)
 						.then(function (response) {
-							this.movie = response.data.results
-							console.log(this.movie[0].poster_path)
+							_self.movie = response.data.results
+							console.log(_self.movie)
+							app.$forceUpdate();
+
 						  //console.log(JSON.stringify(response.data));
 						})
 						.catch(function (error) {
 						  console.log(error);
 						});
+
+					},
+					verMas(movies){
+						var infoMovies = {
+							info: movies
+						}
+						window.location.href = 'details.html'
+						localStorage.setItem('movie', JSON.stringify(infoMovies));
+						console.log(movies)
+					}
+				},
+				mounted(){
+                    this.load()
 				}
 			}).mount('#contenedor')
 		</script>

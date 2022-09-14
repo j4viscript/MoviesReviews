@@ -1,16 +1,120 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-    <script type="text/javascript">
-        
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>
+			Peliculas Free
+		</title>
+		<!-- ENLAZAR VUE JS -->
+		<script src="https://unpkg.com/vue@3"></script>
+		<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@2.27.0/dist/full.css" rel="stylesheet" type="text/css" />
+		<link rel="stylesheet" type="text/css" href="main.css">
+	</head> 
+	<body class="bg-white dark:bg-slate-800 rounded-lg px-6 py-8 ring-1 ring-slate-900/5 shadow-xl">
+        <div id="contenedor" >
+			<a class="btn glass" href="movies.html">Back</a>
+			<div class="content">
+				  <div class="card m-5 card-side bg-base-100 shadow-xl">
+					<figure class="w-1/2"><img :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`"></figure>
+					<div class="card-body">
+					  <h2 class="card-title text-white">{{movie.title}}</h2>
+					  <h2>Synopsis:</h2>
+					  <p class="text-gray-200">{{movie.overview}}</p>
+					  <h2>Original Language: </h2>
+					  <p class="text-gray-200">{{movie.original_language}}</p>
+					  <h2>Release Date:</h2>
+					  <p class="text-gray-200">{{movie.release_date}}</p>
+					  <div class="card-actions justify-end">
+						<div class="rating">
+							<input type="radio" name="rating-2" class="mask mask-star-2 bg-orange-400" />
+							<input type="radio" name="rating-2" class="mask mask-star-2 bg-orange-400" checked />
+							<input type="radio" name="rating-2" class="mask mask-star-2 bg-orange-400" />
+							<input type="radio" name="rating-2" class="mask mask-star-2 bg-orange-400" />
+							<input type="radio" name="rating-2" class="mask mask-star-2 bg-orange-400" />
+						  </div>
+					  </div>
+					  <button @click="darRate">Click</button>
+					</div>
+				  </div>
+			</div>
+        </div>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+            <script type="text/javascript">
+				var peliculas = localStorage.getItem('movie');
+				peliculas = JSON.parse(peliculas);    
+				this.movie = peliculas.info;
+				const { createApp } = Vue;  
 
-    </script>
-</body>
+			const app = createApp({
+				data(){
+					return {
+						user:null, 
+						inAction: 'show',
+						name:'',
+						id:0,
+						movie: [],
+						movie_id: '',
+					}
+				},
+				methods: {
+
+					load(){
+						var peliculas = localStorage.getItem('movie');
+						peliculas = JSON.parse(peliculas);    
+						this.movie = peliculas.info;
+						_self = this;
+						_self.movie_id = peliculas.info.id;
+						console.log(_self.movie_id);
+					},
+					darRate(e){
+						var data = JSON.stringify({
+							"value": 8.5
+						  });
+						  var config = {
+							method: 'post',
+							url: '`https://api.themoviedb.org/3/movie/${movie_id}/rating?`',
+							headers: {
+							  'value': '5', 
+							  'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwZjMzZWI5MjczNDMwYzE0OTkwNzM2MGU3ZTk1ZTVlNyIsInN1YiI6IjYzMWUyZWI4Yjg3YWVjMDA3Zjg5N2UyYiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.VGSFNA0O6HUgqky9J7NTZU6ncl8mNstDGSTo1LWRfBM', 
+							  'Content-Type': 'application/json'
+							},
+							data : data
+						  };
+						  
+						  axios(config)
+						  .then(function (response) {
+							console.log(JSON.stringify(response.data));
+						  })
+						  .catch(function (error) {
+							console.log(error);
+						  });
+					},
+					quitarRate(e){
+						var config = {
+						  method: 'delete',
+						  url: '`https://api.themoviedb.org/3/movie/${movie_id}/rating?`',
+						  headers: { 
+							'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwZjMzZWI5MjczNDMwYzE0OTkwNzM2MGU3ZTk1ZTVlNyIsInN1YiI6IjYzMWUyZWI4Yjg3YWVjMDA3Zjg5N2UyYiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.VGSFNA0O6HUgqky9J7NTZU6ncl8mNstDGSTo1LWRfBM'
+						  }
+						};
+						
+						axios(config)
+						.then(function (response) {
+						  console.log(JSON.stringify(response.data));
+						})
+						.catch(function (error) {
+						  console.log(error);
+						});						
+					}
+					
+				},
+				mounted(){
+                    this.load()
+				}
+			}).mount('#contenedor')
+		</script>
+	</body>
 </html>

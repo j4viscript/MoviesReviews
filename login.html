@@ -6,41 +6,46 @@
 		<title>
             Cuevana 75
 		</title>
-        <script src="https://cdn.tailwindcss.com"></script><link href="https://cdn.jsdelivr.net/npm/daisyui@2.27.0/dist/full.css" rel="stylesheet" type="text/css" />   
+        <script src="https://cdn.tailwindcss.com"></script>
+		<link href="https://cdn.jsdelivr.net/npm/daisyui@2.27.0/dist/full.css" rel="stylesheet" type="text/css" />   
 	</head>
 	<body class="bg-white dark:bg-slate-800 rounded-lg px-6 py-8 ring-1 ring-slate-900/5 shadow-xl">
 
-		<div id="contenedor">
+		<div id="contenedor" class="flex item-center justify-center h-screen bg-100">
 			
 			<form>
-				<fieldset>
-					<legend>
-						Datos de acceso
-					</legend>
+				<div class="bg-white w-96 p-6 rounded shadow-sm">
+					<div class="flex items-center justify-center mb-4">
+						<img src="src/img/logoJaviScript.png" alt="Vue Logo Image" class="h-32">
+					</div>
 
+					<!-- <div v-if="mostrarError" class="bg-red-500 px-3 py-2 rounded text-gray-100 mb-3">
+						<p>Datos Incorrectos</p>
+					</div> -->
 
-					<label>
-						Correo electrónico 
+					<label class="text-gray-700">
+						Username
 					</label>
-					<input type="email" v-model="email" name="" required>
-
-					<br>
-
-					<label>
+					<input class="w-full py-2 bg-gray-200 text-gray-500 px-1 outline-none mb-4" type="email" v-model="email" name="" required>
+					<label class="text-gray-700">
 						Password
 					</label>
-					<input type="password" v-model="password" name="" required>
+					<input class="w-full py-2 bg-gray-200 text-gray-500 px-1 outline-none mb-4"type="password" v-model="password" name="" required>
 
 					<br>
 
-					<button @click="login">
+					<button class="bg-blue-500 w-full text-gray-100 py-2 rounded hover:bg-blue-600 transition-colors" @click="login">
 						Acceder
 					</button>
-
-				</fieldset>
+				</div>
 			</form>
 
 		</div>
+		<footer class="footer footer-center p-4 bg-base-300 text-base-content">
+			<div>
+			  <p>Copyright © 2022 - All right reserved by Javier Oskar Murillo Cota</p>
+			</div>
+		  </footer>
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 		<script src="https://unpkg.com/vue@3"></script>
 		<script type="text/javascript">
@@ -51,7 +56,8 @@
 					return{ 
 						users:null,
 						email:'',
-						password:''
+						password:'',
+						mostrarError: false
 					}
 				},
 				methods:{
@@ -89,8 +95,8 @@
                           console.log(JSON.stringify(response.data));
                         })
                         .catch(function (error) {
-                            alert("datos incorrectos"); 
-                          console.log(error);
+                        	this.mostrarError=true;
+                          	console.log(error);
                         });
                             
 					}
