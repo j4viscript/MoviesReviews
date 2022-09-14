@@ -18,7 +18,7 @@
 			<a class="btn glass" href="movies.html">Back</a>
 			<div class="content">
 				  <div class="card m-5 card-side bg-base-100 shadow-xl">
-					<figure class="w-1/2"><img :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`"></figure>
+					<figure class="w-full h-full"><img :src="`https://image.tmdb.org/t/p/w500/${movie.poster_path}`"></figure>
 					<div class="card-body">
 					  <h2 class="card-title text-white">{{movie.title}}</h2>
 					  <h2>Synopsis:</h2>
@@ -27,20 +27,30 @@
 					  <p class="text-gray-200">{{movie.original_language}}</p>
 					  <h2>Release Date:</h2>
 					  <p class="text-gray-200">{{movie.release_date}}</p>
+					  <h2>Estrellas</h2>
+					  <p class="text-gray-200">{{rate}}</p>
 					  <div class="card-actions justify-end">
-						<div class="rating">
-							<input type="radio" name="rating-2" class="mask mask-star-2 bg-orange-400" />
-							<input type="radio" name="rating-2" class="mask mask-star-2 bg-orange-400" checked />
-							<input type="radio" name="rating-2" class="mask mask-star-2 bg-orange-400" />
-							<input type="radio" name="rating-2" class="mask mask-star-2 bg-orange-400" />
-							<input type="radio" name="rating-2" class="mask mask-star-2 bg-orange-400" />
+						<div class="rating rating-lg rating-half">
+							<div class="rating rating-half">
+								<input type="radio" name="rating-10" class="rating-hidden" checked />
+								<input v-on:click="darRate(0.5, movie); obtenerRate()" type="radio" name="rating-10" class="bg-orange-400 mask mask-star-2 mask-half-1" />
+								<input v-on:click="darRate(1, movie); obtenerRate()" type="radio" name="rating-10" class="bg-orange-400 mask mask-star-2 mask-half-2" />
+								<input v-on:click="darRate(1.5, movie); obtenerRate()" type="radio" name="rating-10" class="bg-orange-400 mask mask-star-2 mask-half-1" />
+								<input v-on:click="darRate(2, movie); obtenerRate()" type="radio" name="rating-10" class="bg-orange-400 mask mask-star-2 mask-half-2" />
+								<input v-on:click="darRate(2.5, movie); obtenerRate()" type="radio" name="rating-10" class="bg-orange-400 mask mask-star-2 mask-half-1" />
+								<input v-on:click="darRate(3, movie); obtenerRate()" type="radio" name="rating-10" class="bg-orange-400 mask mask-star-2 mask-half-2" />
+								<input v-on:click="darRate(3.5, movie); obtenerRate()" type="radio" name="rating-10" class="bg-orange-400 mask mask-star-2 mask-half-1" />
+								<input v-on:click="darRate(4, movie); obtenerRate()" type="radio" name="rating-10" class="bg-orange-400 mask mask-star-2 mask-half-2" />
+								<input v-on:click="darRate(4.5, movie); obtenerRate()" type="radio" name="rating-10" class="bg-orange-400 mask mask-star-2 mask-half-1" />
+								<input v-on:click="darRate(5, movie); obtenerRate()" type="radio" name="rating-10" class="bg-orange-400 mask mask-star-2 mask-half-2" />
 						  </div>
-					  </div>
-					  <button @click="darRate">Click</button>
+						  <button @click="quitarRate(movie)" class="bg-red-500 ml-5 px-3 py-2 rounded text-gray-100 mb-3">Delete Rating</button>
+						</div>
 					</div>
 				  </div>
 			</div>
         </div>
+		</div>
 		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
             <script type="text/javascript">
 				var peliculas = localStorage.getItem('movie');
@@ -56,7 +66,8 @@
 						name:'',
 						id:0,
 						movie: [],
-						movie_id: '',
+						value: null,
+						rate : 0
 					}
 				},
 				methods: {
@@ -67,49 +78,82 @@
 						this.movie = peliculas.info;
 						_self = this;
 						_self.movie_id = peliculas.info.id;
-						console.log(_self.movie_id);
 					},
-					darRate(e){
+					detalles(mv) {
+						this.movie = mv
+					},
+					count(rating) {
+						this.value = rating
+						console.log(rating)
+					},
+					darRate(rating, mv){
 						var data = JSON.stringify({
-							"value": 8.5
-						  });
-						  var config = {
-							method: 'post',
-							url: '`https://api.themoviedb.org/3/movie/${movie_id}/rating?`',
-							headers: {
-							  'value': '5', 
-							  'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwZjMzZWI5MjczNDMwYzE0OTkwNzM2MGU3ZTk1ZTVlNyIsInN1YiI6IjYzMWUyZWI4Yjg3YWVjMDA3Zjg5N2UyYiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.VGSFNA0O6HUgqky9J7NTZU6ncl8mNstDGSTo1LWRfBM', 
-							  'Content-Type': 'application/json'
-							},
-							data : data
-						  };
-						  
-						  axios(config)
-						  .then(function (response) {
-							console.log(JSON.stringify(response.data));
-						  })
-						  .catch(function (error) {
-							console.log(error);
-						  });
-					},
-					quitarRate(e){
+						  "value": rating
+						});
+						
 						var config = {
-						  method: 'delete',
-						  url: '`https://api.themoviedb.org/3/movie/${movie_id}/rating?`',
+						  method: 'post',
+						  url: 'https://api.themoviedb.org/3/movie/'+ mv.id +'/rating',
 						  headers: { 
-							'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwZjMzZWI5MjczNDMwYzE0OTkwNzM2MGU3ZTk1ZTVlNyIsInN1YiI6IjYzMWUyZWI4Yjg3YWVjMDA3Zjg5N2UyYiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.VGSFNA0O6HUgqky9J7NTZU6ncl8mNstDGSTo1LWRfBM'
-						  }
+							'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwZjMzZWI5MjczNDMwYzE0OTkwNzM2MGU3ZTk1ZTVlNyIsInN1YiI6IjYzMWUyZWI4Yjg3YWVjMDA3Zjg5N2UyYiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.VGSFNA0O6HUgqky9J7NTZU6ncl8mNstDGSTo1LWRfBM', 
+							'Content-Type': 'application/json'
+						  },
+						  data : data
 						};
 						
 						axios(config)
 						.then(function (response) {
-						  console.log(JSON.stringify(response.data));
+							console.log('Tu reseña es de ' + rating);
 						})
 						.catch(function (error) {
 						  console.log(error);
 						});						
-					}
-					
+					},
+					quitarRate(mv){
+						var config = {
+						  method: 'delete',
+						  url: 'https://api.themoviedb.org/3/movie/'+mv.id+'/rating',
+						  headers: { 
+							'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwZjMzZWI5MjczNDMwYzE0OTkwNzM2MGU3ZTk1ZTVlNyIsInN1YiI6IjYzMWUyZWI4Yjg3YWVjMDA3Zjg5N2UyYiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.VGSFNA0O6HUgqky9J7NTZU6ncl8mNstDGSTo1LWRfBM'
+						  },
+						};
+						axios(config)
+						.then(function (response) {
+							console.log("se ah quitado tu calificacion");
+						})
+						.catch(function (error) {
+						  console.log(error);
+						});						
+					},
+
+					obtenerRate() {
+						let _self = this;
+						let star = false;
+						var config = {
+							method: 'get',
+							url: 'https://api.themoviedb.org/3/account/{account_id}/rated/movies',
+							headers: {
+								'Authorization': 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJkZWRjOWQ0OTY0ZmVhMDA4YmVkNGVkMjc0ZDZkN2JjOSIsInN1YiI6IjYzMjAxYTY3Y2MyNzdjMDA4YTYxMTU3ZCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.7SvRwk9oBs-BTvnhJe74ufeZZ43f3QhGqHGvVDWlxXc'
+							}
+						};
+	
+						axios(config)
+							.then(function (response) {
+								for (i = 0; i < response.data.results.length; i++) {
+									if (response.data.results[i].id == _self.movie.id) {
+										_self.rate = response.data.results[i].rating
+										star=true;
+									}
+									else if (!star) {
+										_self.rate = 0;
+									}
+								}
+								app.$forceUpdate();
+							})
+							.catch(function (error) {
+								console.log(error);
+							});
+					},
 				},
 				mounted(){
                     this.load()
